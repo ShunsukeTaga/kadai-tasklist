@@ -1,16 +1,14 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
-  before_action :correct_user, only: [:destroy]
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   
   def index
     # @tasks = Task.all
-    if logged_in?
-      @task = current_user.tasks.build  # form_with 用
-      @pagy, @tasks = pagy(current_user.tasks.order(id: :desc))
-      @user = current_user
-      counts(current_user)
-    end
+    @task = current_user.tasks.build  # form_with 用
+    @pagy, @tasks = pagy(current_user.tasks.order(id: :desc))
+    @user = current_user
+    counts(@user)
   end
 
   def show
@@ -69,9 +67,6 @@ class TasksController < ApplicationController
   
   def task_params
     params.require(:task).permit(:content, :status)
-  end
-  def micropost_params
-    params.require(:micropost).permit(:content)
   end
   
   def set_task
